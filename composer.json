@@ -1,0 +1,28 @@
+{
+    "name": "nano/nano-core",
+    "version": "1.0.0",
+    "type": "package",
+    "autoload": {
+        "psr-4": {
+            "Nano\\": "src/"
+        },
+        "files": [
+            "helpers/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Hugo Andrade",
+            "email": "hugoramosandrade@gmail.com"
+        }
+    ],
+    "require": {
+        "hugoandrade/http-message-psr7": "^1.0",
+        "hugoandrade/container-di": "^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "psr/http-server-handler": "^1.0"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^7.3"
+    }
+}
