@@ -30,23 +30,19 @@ class Response extends HttpResponse implements ResponseInterface
         );
     }
 
-    public function json(?array $attributes = null, null|int|HttpStatusCode $statusCode = HttpStatusCode::OK): JsonResponseInterface
+    public function json(?array $attributes = null, null|int|HttpStatusCode $statusCode = null): JsonResponseInterface
     {
         if (is_null($this->jsonResponse)) {
-            $this->jsonResponse = container(JsonResponseInterface::class);
-        }
-
-        if ($statusCode instanceof HttpStatusCode) {
-            $statusCode = $statusCode->value;
+            $this->jsonResponse = app(JsonResponseInterface::class);
         }
 
         $this->jsonResponse->setResponse($attributes ?? $this->response);
-        $this->jsonResponse = $this->jsonResponse->withStatus($statusCode ?? $this->getStatusCode());
+        $this->jsonResponse = $this->jsonResponse->withStatus($this->resolveStatusCode($statusCode ?? $this->getStatusCode()));
         $this->jsonResponse = $this->jsonResponse->withHeader("content-type", ["application/json", "charset=utf-8"]);
         return $this->jsonResponse;
     }
 
-    private function resolveStatusCode(null|int|HttpStatusCode $statusCode):int
+    private function resolveStatusCode(null|int|HttpStatusCode $statusCode = null):int
     {
         if ($statusCode instanceof HttpStatusCode) {
             return $statusCode->value;
