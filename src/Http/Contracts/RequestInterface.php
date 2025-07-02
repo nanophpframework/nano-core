@@ -2,9 +2,9 @@
 
 namespace Nano\Http\Contracts;
 
-use Psr\Http\Message\RequestInterface as MessageRequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-interface RequestInterface extends MessageRequestInterface
+interface RequestInterface extends ServerRequestInterface
 {
     public static function capture(): self;
 }

@@ -10,12 +10,19 @@ class RoutingException extends Exception implements RenderableException
 {
     public function render(): ResponseInterface
     {
-        $data = [
-            "message" => $this->getMessage(),
-            "file" => $this->getFile(),
-            "line" => $this->getLine(),
-            "trace" => $this->getTrace(),
-        ];
+        if (env('APP_ENV') !== 'production') {
+            $data = [
+                "message" => $this->getMessage(),
+                "file" => $this->getFile(),
+                "line" => $this->getLine(),
+                "trace" => $this->getTrace(),
+            ];
+        } else {
+            $data = [
+                "message" => $this->getMessage(),
+            ];
+        }
+
 
         return response()->json(
             $data,

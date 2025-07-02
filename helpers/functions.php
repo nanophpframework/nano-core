@@ -40,3 +40,27 @@ if (!function_exists('app')) {
         return $container->get($abstract);
     }
 }
+
+if (!function_exists('base_path')) {
+    /**
+     *  Return path to the root of project
+     */
+    function base_path(): string
+    {
+        return realpath(__DIR__."/../");
+    }
+}
+
+if (!function_exists("routes_path")) {
+    function routes_path(): string
+    {
+        return base_path()."/routes";
+    }
+}
+
+if (!function_exists('config_path')) {
+    function config_path(): string
+    {
+        return base_path()."/config";
+    }
+}

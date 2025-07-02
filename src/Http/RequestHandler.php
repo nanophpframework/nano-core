@@ -80,10 +80,16 @@ class RequestHandler implements RequestHandlerInterface
 
             $instance = JsonResponseInterface::class;
             throw new InvalidResponseException("Response must be null or instance of {$instance}");
-        } else {
-            foreach ($pathParams as &$parameter) {
-                $parameter = is_numeric($parameter) ? (int) $parameter : $parameter;
-                $parameters[] = $parameter;
+        } else if ($method){
+            $reflectionMethod = $reflection->getMethod($method);
+            $methodParameters = $reflectionMethod->getParameters();
+            if (count($methodParameters) === 1 && $methodParameters[0]->getType() instanceof ReflectionNamedType && $methodParameters[0]->getType()->getName() === $request::class) {
+                $parameters[] = $request;
+            } else {
+                foreach ($pathParams as &$parameter) {
+                    $parameter = is_numeric($parameter) ? (int) $parameter : $parameter;
+                    $parameters[] = $parameter;
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 <?php
 
+use Nano\Http\Controllers\HomeController;
 use Nano\Http\Middlewares\ErrorHandlingMiddleware;
 use Nano\Http\Middlewares\SecondMiddleware;
 use Nano\Http\Middlewares\ThirdMiddleware;
@@ -31,8 +32,8 @@ foreach ($middlewares as $key => $class) {
     $last = $instance;
 }
 $request = new Request(
-    'POST',
-    '/example',
+    'GET',
+    '/controller/1',
     [],
     '{}'
 );
@@ -42,6 +43,8 @@ Route::post('/example', function() {
 
     return response()->json(["message" => "Ok"]);
 });
+
+Route::get('/controller/{id}', "Nano\Http\Controllers\HomeController@index");
 
 $requestHandler = new RequestHandler(
     new Route,
