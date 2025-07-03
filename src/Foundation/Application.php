@@ -5,6 +5,7 @@ namespace Nano\Foundation;
 use Nano\DependencyInjection\Container;
 use Nano\DependencyInjection\Contracts\ContainerInterface;
 use Nano\Foundation\Contracts\KernelInterface;
+use Nano\Foundation\Contracts\ProviderInterface;
 use Nano\Http\Contracts\RequestInterface;
 use Nano\Http\Kernel;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
@@ -50,7 +51,7 @@ class Application
         }
 
         $body = $response->getBody()->getContents();
-        file_put_contents('php:://output', $body);
+        file_put_contents('php://output', $body);
     }
 
     public function withRouting(string $path): static
@@ -73,7 +74,15 @@ class Application
     public function withProviders(?array $providers = []): static
     {
         foreach ($providers as $provider) {
+            if (!class_exists($provider)) {
+                throw new RuntimeException("Provider '{$provider} not found.'");
+            }
+            /** @var \Nano\Foundation\Contracts\ProviderInterface */
             $instance = $this->container->get($provider);
+            if (!$instance instanceof ProviderInterface) {
+                $interface = ProviderInterface::class;
+                throw new RuntimeException("Provider '{$provider}' must be instance of {$interface}");
+            }
             $instance->register();
             $this->providers[] = $instance;
         }
