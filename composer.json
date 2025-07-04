@@ -2,6 +2,7 @@
     "name": "nano-fm/nano-core",
     "version": "1.0.1",
     "type": "package",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Nano\\": "src/"
