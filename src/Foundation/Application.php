@@ -17,6 +17,7 @@ use RuntimeException;
 class Application
 {
     private array $providers = [];
+    private array $middlewares = [];
 
     public function __construct(
         private ContainerInterface $container,
@@ -45,6 +46,7 @@ class Application
 
         /** @var KernelInterface */
         $kernel = $this->container->get(KernelInterface::class);
+        $kernel->setMiddlewares($this->middlewares);
         $response = $kernel->handle($request);
 
         $this->sendResponse($response);
@@ -83,6 +85,12 @@ class Application
             $this->providers[] = $instance;
         }
 
+        return $this;
+    }
+
+    public function withMiddlewares(array $middlewares): static
+    {
+        $this->middlewares = $middlewares;
         return $this;
     }
 
