@@ -7,8 +7,11 @@ use Nano\DependencyInjection\Contracts\ContainerInterface;
 use Nano\Foundation\Contracts\KernelInterface;
 use Nano\Foundation\Contracts\ProviderInterface;
 use Nano\Http\Contracts\RequestInterface;
+use Nano\Http\Contracts\RouterInterface;
 use Nano\Http\Kernel;
+use Nano\Http\Router\Route;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
 class Application
@@ -34,24 +37,17 @@ class Application
 
     public function handleRequest(RequestInterface $request)
     {
+        $this->initBuffer();
+        $this->withProviders([
+            RouteServiceProvider::class
+        ]);
         $this->container->bind(RequestInterface::class, $request);
 
         /** @var KernelInterface */
         $kernel = $this->container->get(KernelInterface::class);
         $response = $kernel->handle($request);
 
-        http_response_code($response->getStatusCode());
-        foreach ($response->getHeaders() as $name => $value) {
-            if (is_array($value)) {
-                $value = implode(', ', $value);
-            }
-
-            $header = "{$name}: $value";
-            header($header);
-        }
-
-        $body = $response->getBody()->getContents();
-        file_put_contents('php://output', $body);
+        $this->sendResponse($response);
     }
 
     public function withRouting(string $path): static
@@ -88,5 +84,46 @@ class Application
         }
 
         return $this;
+    }
+
+    private function initBuffer(): bool
+    {
+        return ob_start();
+    }
+
+    private function sendResponse(ResponseInterface $response): void
+    {
+        http_response_code($response->getStatusCode());
+        foreach ($response->getHeaders() as $name => $value) {
+            if (is_array($value)) {
+                $value = implode(', ', $value);
+            }
+
+            $header = "{$name}: $value";
+            header($header);
+        }
+
+        $body = $response->getBody()->getContents();
+        file_put_contents('php://output', $body);
+        $bufferContent = ob_get_contents();
+
+        $stream = fopen('php://memory', 'r+');
+        fwrite($stream, $bufferContent);
+        rewind($stream);
+
+        $contentType = mime_content_type($stream);
+        fclose($stream);
+
+        if ($contentType === 'application/javascript') {
+            $contentType = "text/html";
+        }
+
+        header("Content-Type: {$contentType}");
+        $this->flushBuffer();
+    }
+
+    private function flushBuffer(): bool
+    {
+        return ob_flush();
     }
 }
