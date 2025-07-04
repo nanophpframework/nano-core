@@ -51,6 +51,9 @@ class JsonResponse extends Response implements JsonResponseInterface
     public function setResponse(array $attributes): JsonResponseInterface
     {
         $this->response = $attributes;
+        $stream = $this->getBody();
+        $stream->write(json_encode($attributes));
+        $stream->rewind();
         return $this;
     }
 

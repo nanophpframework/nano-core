@@ -45,22 +45,26 @@ if (!function_exists('base_path')) {
     /**
      *  Return path to the root of project
      */
-    function base_path(): string
+    function base_path(?string $path = ""): string
     {
-        return realpath(__DIR__."/../");
+        $path = trim($path, "\n\r\t\v\x00\/");
+        return realpath(getcwd()."/../")."/{$path}";
     }
 }
 
 if (!function_exists("routes_path")) {
-    function routes_path(): string
+    function routes_path(?string $path = ""): string
     {
-        return base_path()."/routes";
+        $path = trim($path, "\n\r\t\v\x00\/");
+        $path = trim("routes/{$path}", "\n\r\t\v\x00\/");
+
+        return base_path($path);
     }
 }
 
 if (!function_exists('config_path')) {
-    function config_path(): string
+    function config_path(?string $path = ""): string
     {
-        return base_path()."/config";
+        return base_path("/config");
     }
 }
