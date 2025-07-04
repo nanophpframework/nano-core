@@ -1,5 +1,5 @@
 {
-    "name": "nano/nano-core",
+    "name": "nano-fm/nano-core",
     "version": "1.0.0",
     "type": "package",
     "autoload": {
