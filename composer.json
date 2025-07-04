@@ -17,6 +17,7 @@
         }
     ],
     "require": {
+        "php": "^8.4",
         "hugoandrade/http-message-psr7": "^1.0",
         "hugoandrade/container-di": "^1.0",
         "psr/http-server-middleware": "^1.0",
