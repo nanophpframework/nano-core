@@ -1,6 +1,6 @@
 {
     "name": "nano-fm/nano-core",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "type": "package",
     "license": "MIT",
     "autoload": {
