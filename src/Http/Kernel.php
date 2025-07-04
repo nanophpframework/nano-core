@@ -60,4 +60,10 @@ class Kernel implements KernelInterface
 
         $this->middlewareChain = $first;
     }
+
+    public function setMiddlewares(array $middlewares): static
+    {
+        $this->middlewares = $middlewares;
+        return $this;
+    }
 }
